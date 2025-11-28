@@ -23,8 +23,7 @@ services:
       - app-network
 
   frontend:
-    build:
-      context: ./frontend
+    build: ./frontend
     restart: unless-stopped
     ports:
       - "80:80"
