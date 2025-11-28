@@ -40,5 +40,5 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
             cd /home/ubuntu/DiscoverDollarTask
-            docker-compose pull
-            docker-compose up -d
+            docker compose pull
+            docker compose up -d
