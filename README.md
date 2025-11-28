@@ -299,6 +299,122 @@ http://<your-instance-public-ip>80
 ### Latest Images pushed to Dockerhub Account
 <img width="1440" height="900" alt="Screenshot 2025-11-28 at 9 51 32 AM" src="https://github.com/user-attachments/assets/6efa540e-2be0-41bf-a589-f05448087c0d" />
 
+### With Jenkins CI/CD Pipeline Setup
+
+### Install Jenkins on Ubuntu EC2 Instance
+### STEP 1 - Update System
+``` bash
+sudo apt update
+```
+### STEP 2 — Install dependencies
+```bash
+sudo apt install -y curl ca-certificates gnupg openjdk-17-jdk
+
+```
+### STEP 3 — Add the NEW Jenkins repository key
+```bash
+sudo mkdir -p /usr/share/keyrings
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | \
+  sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+```
+### STEP 4 — Add the NEW Jenkins repository
+```bash
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | \
+  sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+```
+### STEP 5 — Update and install Jenkins
+```bash
+sudo apt update
+sudo apt install -y jenkins
+
+```
+### After Installation Check the status of jenkins server
+```bash
+sudo systemctl status jenkins
+```
+### Admin Password
+```bash
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+### Access our jenkins server in browser
+```bash
+http://<publicip:8080>
+```
+
+### Pipeline Script
+```bash
+pipeline {
+  agent any
+
+  environment {
+    VM_HOST = '3.235.190.236'
+    VM_USERNAME = "root"
+    DOCKERHUB_USERNAME = 'dsp9391'
+  }
+
+  stages {
+
+    stage('Clone Repository') {
+      steps {
+        git branch: 'main', url: 'https://github.com/Devivaraprasadreddy/DiscoverDollarTask.git'
+      }
+    }
+
+    stage('Login to Docker Hub') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
+                                         usernameVariable: 'DOCKER_USER',
+                                         passwordVariable: 'DOCKER_PASS')]) {
+          sh '''
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+          '''
+        }
+      }
+    }
+
+    stage('Build Backend Image') {
+      steps {
+        sh '''
+          docker build -t ${DOCKERHUB_USERNAME}/discoverdollar-backend:latest ./backend
+          docker push ${DOCKERHUB_USERNAME}/discoverdollar-backend:latest
+        '''
+      }
+    }
+
+    stage('Build Frontend Image') {
+      steps {
+        sh '''
+          docker build -t ${DOCKERHUB_USERNAME}/discoverdollar-frontend:latest ./frontend
+          docker push ${DOCKERHUB_USERNAME}/discoverdollar-frontend:latest
+        '''
+      }
+    }
+
+    stage('Deploy to VM') {
+      steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'vmsshkey',
+                                           keyFileVariable: 'SSH_KEY')]) {
+          sh '''
+            ssh -o StrictHostKeyChecking=no -i $SSH_KEY $VM_USERNAME@$VM_HOST "
+              cd ~/DiscoverDollarTask
+              docker compose pull
+              docker compose up -d
+            "
+          '''
+        }
+      }
+    }
+  }
+}
+```
+<img width="1440" height="900" alt="Screenshot 2025-11-28 at 12 33 18 PM" src="https://github.com/user-attachments/assets/e4677fea-71ea-41d0-8b4a-3c171e395f6e" />
+<img width="1440" height="900" alt="Screenshot 2025-11-28 at 12 33 25 PM" src="https://github.com/user-attachments/assets/612ef69f-beed-41e6-8cba-0c4c900f455e" />
+<img width="1440" height="900" alt="Screenshot 2025-11-28 at 12 33 32 PM" src="https://github.com/user-attachments/assets/004e599e-a6e3-4c15-8c73-336219efd666" />
+
+
+
 ### Descritpion
 ### Repository Setup
 Create a new GitHub repository for this project.
