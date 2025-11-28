@@ -296,5 +296,34 @@ http://<your-instance-public-ip>80
 ### Run the workflow in GitHub
 <img width="1440" height="900" alt="Screenshot 2025-11-28 at 9 48 35 AM" src="https://github.com/user-attachments/assets/58d8ae4e-1396-4d8d-9867-d89dfcc044a0" />
 
+### Latest Images pushed to Dockerhub Account
+<img width="1440" height="900" alt="Screenshot 2025-11-28 at 9 51 32 AM" src="https://github.com/user-attachments/assets/6efa540e-2be0-41bf-a589-f05448087c0d" />
+
+### Descritpion
+### Repository Setup
+Create a new GitHub repository for this project.
+Push the complete code to the repository.
+
+### Containerization & Deployment
+Create Docker files for both the frontend and backend.
+Build and push Docker images to your Docker Hub account.
+Set up a new Ubuntu virtual machine on any cloud platform (AWS, Azure, or similar).
+Use Docker Compose to deploy the application on this VM.
+
+### Database Setup
+Choose one of the following options:
+Install MongoDB directly on the Ubuntu VM.
+OR use the official MongoDB Docker image as part of your Docker Compose setup.
+CI/CD Pipeline Configuration
+Use GitHub Actions or Jenkins to implement a CI/CD pipeline.
+
+### The pipeline should:
+Build updated Docker images when changes are pushed to GitHub.
+Push those images to Docker Hub.
+Automatically pull the latest images and restart containers on the VM.
+
+### Nginx Reverse Proxy
+Set up Nginx as a reverse proxy.
+The entire application should be accessible via port 80 
 
 
