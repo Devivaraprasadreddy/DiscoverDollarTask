@@ -25,3 +25,6 @@ Run `ng serve --port 8081`
 You can modify the `src/app/services/tutorial.service.ts` file to adjust how the frontend interacts with the backend.
 
 Navigate to `http://localhost:8081/`
+
+### Create a Virtual Machine in AWS Cloud Platform
+<img width="1440" height="900" alt="Screenshot 2025-11-28 at 9 07 26 AM" src="https://github.com/user-attachments/assets/5e49236c-5ca2-4a42-970e-30083d41db5d" />
